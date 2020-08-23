@@ -19,8 +19,6 @@ module.exports = class WebsocketController {
             if (!this.activeUsers.hasOwnProperty(data.uuid))
                 this.activeUsers[data.uuid] = data;
 
-            socket.handshake.session.userdata = data;
-
             const username = data.uuid;
             socket.user = username;
             await this.joinRoom(socket, username);
@@ -88,11 +86,6 @@ module.exports = class WebsocketController {
                         socket.broadcast.emit('users updated');
                     }
                 });
-
-                if (socket.handshake.session.userdata) {
-                    delete socket.handshake.session.userdata;
-                    socket.handshake.session.save();
-                }
 
                 console.log(`User disconnected ${socket.user}`);
             })

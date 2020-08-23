@@ -12,16 +12,9 @@ const message = `Server is running on PORT:${PORT}.`;
 
 // Init express
 const app = express();
-const session = require("express-session")({
-  secret: "my-chat-app-secret",
-  resave: true,
-  saveUninitialized: true
-});
-const sharedsession = require("express-socket.io-session");
 
 // Attach session
 app.use(cookieParser());
-app.use(session);
 // set a cookie
 app.use(function (req, res, next) {
   var cookie = req.cookies.uuid;
@@ -41,7 +34,6 @@ var io = require('socket.io')(server, {
   pingTimeout: 5000
 });
 
-io.use(sharedsession(session, cookieParser())); 
 bridge.init(io);
 
 // API monitoring
