@@ -1,4 +1,5 @@
 var profile;
+var onlineUsers;
 $(".type_msg").on('keyup', function () {
     let uuid = $(this).attr('uuid');
     showTyping(uuid);
@@ -9,28 +10,51 @@ $('.type_msg').keydown(function (e) {
         e.preventDefault();
         let uuid = $(this).attr('uuid');
         let msg = $(this).val();
-        if(!msg) return;
+        if (!msg) return;
         $(this).val('');
         sendMessage(uuid, msg);
     }
 });
 
+$(".add-to-group").on('click', () => {
+    renderGroupModal();
+    let uuid = $('.type_msg').attr('uuid');
+    $(`input[value=${uuid}]`).prop('checked', true);
+    $('#groupModal').modal()
+});
+
+$(".create-group-btn").on("click", () => {
+    let groupName = $('.group-name').val();
+    let selectedUsers = [];
+    $.each($("input[name='group']:checked"), function () {
+        selectedUsers.push($(this).val());
+    });
+
+    if (!groupName && !selectedUsers.length) return;
+    $('#groupModal').modal('hide');
+    createGroup(groupName, selectedUsers);
+
+})
+
 window.addEventListener('onlineUsers', event => {
+    onlineUsers = event.detail || [];
     renderOnlineUsers(event.detail);
 });
 
 window.addEventListener('newMessage', event => {
     let uuid = $('.type_msg').attr('uuid');
     let msg = event.detail;
-    let counter = $('#' + msg.senderId).find('.unseen').attr('counter') || 0;
+    let selector = $('#' + msg.senderId);
+    if (msg.gid) selector = $('#' + msg.gid);
+    let counter = selector.find('.unseen').attr('counter') || 0;
     counter = +counter;
-    if (uuid === msg.receiverId || uuid === msg.senderId) {
+    if ((uuid === msg.senderId && !msg.gid) || msg.self || uuid === msg.gid) {
         appendChat(event.detail);
     }
     else {
         counter++;
-        $('#' + msg.senderId).find('.unseen').attr('counter', counter+'');
-        $('#' + msg.senderId).find('.unseen').text(counter);
+        selector.find('.unseen').attr('counter', counter + '');
+        selector.find('.unseen').text(counter);
     }
 });
 
@@ -63,7 +87,7 @@ function renderOnlineUsers(onloneUsers) {
     let users = "";
     for (let [i, val] of onloneUsers.entries()) {
         users += `
-        <li class="online-user" uuid="${val.uuid}">
+        <li class="online-user" uuid="${val.uuid}" type="${val.type || 'u'}">
             <div class="d-flex bd-highlight" id="${val.uuid}">
                 <div class="img_cont">
                     <img src="assets/images/user.png"
@@ -85,9 +109,11 @@ function renderOnlineUsers(onloneUsers) {
         $(this).find('.unseen').text('');
         $(this).find('.unseen').attr('counter', '0');
         let uuid = $(this).attr('uuid');
+        let type = $(this).attr('type');
         getChattingPartnerProfile(uuid);
         getChattingMassages(uuid);
         $('.type_msg').attr('uuid', uuid);
+        $('.type_msg').attr('type', type);
         $('.chat-box').css('display', 'block');
         $('.default-msg').css('display', 'none');
     });
@@ -124,7 +150,7 @@ function renderChats(chats) {
     let chatHtml = '';
     let slf = $("#profile").find('li').attr('uuid');
     for (let chat of chats) {
-        if(chat.senderId === slf) {
+        if (chat.senderId === slf) {
             chatHtml += `
                 <div class="d-flex justify-content-end mb-4">
                     <div class="msg_cotainer_send">
@@ -151,13 +177,13 @@ function renderChats(chats) {
         }
     }
     $('.msg_card_body').html(chatHtml);
-    $(".msg_card_body").animate({ scrollTop: $('.msg_card_body').prop("scrollHeight")}, 10);
+    $(".msg_card_body").animate({ scrollTop: $('.msg_card_body').prop("scrollHeight") }, 10);
 };
 
 function appendChat(chat) {
     let slf = $("#profile").find('li').attr('uuid');
     let chatHtml = '';
-    if(chat.senderId === slf) {
+    if (chat.senderId === slf) {
         chatHtml += `
             <div class="d-flex justify-content-end mb-4">
                 <div class="msg_cotainer_send">
@@ -183,5 +209,13 @@ function appendChat(chat) {
         `;
     }
     $('.msg_card_body').append(chatHtml);
-    $(".msg_card_body").animate({ scrollTop: $('.msg_card_body').prop("scrollHeight")}, 10);
+    $(".msg_card_body").animate({ scrollTop: $('.msg_card_body').prop("scrollHeight") }, 10);
+};
+
+function renderGroupModal() {
+    var liStr = "";
+    for (let user of onlineUsers) {
+        liStr += `<li><input type="checkbox" name="group" value="${user.uuid}"> ${user.name}</li>`
+    }
+    $(".selectedUsers").html(liStr);
 };

@@ -13,6 +13,10 @@ var _bindEvents = () => {
         console.log(msg);
     });
 
+    socket.on('group request', (gid) => {
+        socket.emit('group response', gid);
+    });
+
     socket.on('typing', (data) => {
         window.dispatchEvent(new CustomEvent('typing', {detail : data}));
     });
@@ -69,6 +73,10 @@ var showTyping = (uuid) => {
 
 var sendMessage = (uuid, msg) => {
     socket.emit('send messsage', uuid, msg);
+}
+
+var createGroup = (gname, uuids) => {
+    socket.emit('create group', gname, uuids);
 }
 
 

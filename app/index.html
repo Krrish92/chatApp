@@ -5,14 +5,12 @@
     <title>Chat Application - A small demo</title>
     <meta property="og:title" content="Chat Application - A small demo" />
     <meta property="og:description"
-        content="This is a small chat application build with nodejs, socket.io. This is great demo for understanding session management in browswe and one to one chatting"/>
+        content="This is a small chat application build with nodejs, socket.io. This is great demo for understanding session management in browswe and one to one chatting" />
     <meta property="og:image" content="https://bombyxplm.com/assets/img/og-imge1.jpg" />
     <meta name="description"
         content="This is a small chat application build with nodejs, socket.io. This is great demo for understanding session management in browswe and one to one chatting">
-    <meta name="keywords"
-        content="Chat application, session management, multiple tabs, socket.io">
-    <meta name="author"
-        content="Krrish Yadav">
+    <meta name="keywords" content="Chat application, session management, multiple tabs, socket.io">
+    <meta name="author" content="Krrish Yadav">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="stylesheet" href="assets/css/bootstrap.min.css"
@@ -21,10 +19,8 @@
         integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 
     <script src="assets/js/jquery.min.js"></script>
-    <link rel="stylesheet" type="text/css"
-        href="assets/css/jquery.mCustomScrollbar.min.css">
-    <script type="text/javascript"
-        src="assets/js/jquery.mCustomScrollbar.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="assets/css/jquery.mCustomScrollbar.min.css">
+    <script type="text/javascript" src="assets/js/jquery.mCustomScrollbar.min.js"></script>
 
     <link rel="stylesheet" href="assets/css/theme.css">
     <script src="assets/js/bootstrap.min.js"></script>
@@ -67,6 +63,12 @@
                                 <span class='chat-user-name'></span>
                             </div>
                         </div>
+                        <span id="action_menu_btn"><i class="fas fa-ellipsis-v"></i>...</span>
+                        <div class="action_menu">
+                            <ul>
+                                <li class="add-to-group"><i class="fas fa-plus"></i> Add to group</li>
+                            </ul>
+                        </div>
                     </div>
                     <div class="card-body msg_card_body chat-box" style="display: none;">
 
@@ -85,6 +87,34 @@
                         </div>
                         <span class="typing" style="font-size: 8px; font-style: italic; color: white;"></span>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="groupModal" tabindex="-1" role="dialog" aria-labelledby="groupModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="groupModalLabel">Create group</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table>
+                        <tr>
+                            <td>Group Name</td>
+                            <td><input type="text" class="group-name"></td>
+                        </tr>
+                    </table>
+                    <ul class="selectedUsers"></ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary create-group-btn">Create</button>
                 </div>
             </div>
         </div>
