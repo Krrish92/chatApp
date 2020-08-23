@@ -1,0 +1,13 @@
+# Hi tech freaks! Its a small chat application using socket.io
+
+Pre-requisites:
+    1. Nodejs <= 10.x
+
+Setup:
+    1. Just clone the project
+    2. run `cd chatApp/server`
+    3. run `npm install`
+    4. run `npm start`
+    5. click on http://localhost:8080
+
+Its done. Now you can open above link on multiple browsers for testing application. 
